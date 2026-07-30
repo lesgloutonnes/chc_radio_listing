@@ -1,15 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record id="module_category_chc_radio" model="ir.module.category">
+        <field name="name">CHC Radio</field>
+        <field name="description">Listing et gestion des équipements d'imagerie médicale.</field>
+        <field name="sequence">50</field>
+    </record>
+
     <record id="group_radio_listing_user" model="res.groups">
         <field name="name">Utilisateur</field>
-        <field name="category_id" ref="base.module_category_uncategorized"/>
+        <field name="category_id" ref="module_category_chc_radio"/>
         <field name="comment">Peut consulter les équipements (lecture seule).</field>
     </record>
 
     <record id="group_radio_listing_manager" model="res.groups">
         <field name="name">Gestionnaire</field>
-        <field name="category_id" ref="base.module_category_uncategorized"/>
+        <field name="category_id" ref="module_category_chc_radio"/>
         <field name="implied_ids" eval="[(4, ref('chc_radio_listing.group_radio_listing_user'))]"/>
         <field name="comment">Peut créer, modifier, supprimer les équipements et configurer les catégories.</field>
+    </record>
+
+  <!-- Tous les utilisateurs internes obtiennent la lecture -->
+    <record id="base.group_user" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('chc_radio_listing.group_radio_listing_user'))]"/>
+    </record>
+
+  <!-- L'administrateur peut gérer l'application après installation -->
+    <record id="base.user_admin" model="res.users">
+        <field name="groups_id" eval="[(4, ref('chc_radio_listing.group_radio_listing_manager'))]"/>
     </record>
 </odoo>
