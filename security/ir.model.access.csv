@@ -1,7 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-
 access_category_user,category user,model_chc_radio_listing_category,chc_radio_listing.group_radio_listing_user,1,0,0,0
 access_equipment_user,equipment user,model_chc_radio_listing_equipment,chc_radio_listing.group_radio_listing_user,1,0,0,0
-
 access_category_manager,category manager,model_chc_radio_listing_category,chc_radio_listing.group_radio_listing_manager,1,1,1,1
 access_equipment_manager,equipment manager,model_chc_radio_listing_equipment,chc_radio_listing.group_radio_listing_manager,1,1,1,1
