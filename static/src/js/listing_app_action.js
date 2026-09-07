@@ -14,6 +14,12 @@ export class ListingAppAction extends Component {
     setup() {
         this.appUrl = "/chc_radio_listing/app";
     }
+
+    get rootClass() {
+        return ["o_chc_radio_listing_action", this.props.className || "o_action"]
+            .filter(Boolean)
+            .join(" ");
+    }
 }
 
 registry.category("actions").add("chc_radio_listing.listing_app", ListingAppAction);

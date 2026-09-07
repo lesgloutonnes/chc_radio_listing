@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
     <t t-name="chc_radio_listing.ListingAppAction">
-        <div class="o_chc_radio_listing_action o_action">
+        <div t-att-class="rootClass">
             <iframe
                 class="o_chc_radio_listing_iframe"
                 t-att-src="appUrl"
