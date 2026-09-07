@@ -201,20 +201,14 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
 <header style="background:#1e293b; border-bottom:1px solid #334155;" class="sticky top-0 z-40">
   <div class="flex items-center justify-between px-4 py-3 gap-3">
     <div class="flex items-center gap-3">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <circle cx="12" cy="12" r="2"/>
-        <path d="M16.24 7.76a6 6 0 0 1 0 8.49"/>
-        <path d="M7.76 16.24a6 6 0 0 1 0-8.49"/>
-        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
-        <path d="M4.93 19.07a10 10 0 0 1 0-14.14"/>
-      </svg>
-      <div>
-        <div style="color:#f1f5f9; font-size:15px; font-weight:600; line-height:1.1;">CHC - Listing Radio</div>
-        <div style="color:#94a3b8; font-size:11px;">Listing et gestion équipement d'imagerie médicale.</div>
-      </div>
+      <button id="btnAdd" class="btn btn-primary btn-sm" onclick="showAddModal()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Ajouter un équipement
+      </button>
       <a id="odooHomeLink" href="/web" target="_top" class="btn btn-secondary btn-sm hide-mobile"
-         style="display:none; margin-left:8px;" title="Retour aux applications Odoo">
+         style="display:none;" title="Retour aux applications Odoo">
         Applications Odoo
       </a>
     </div>
@@ -230,12 +224,6 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
         </svg>
         Importer
-      </button>
-      <button id="btnAdd" class="btn btn-primary btn-sm" onclick="showAddModal()">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-        </svg>
-        Ajouter
       </button>
       <button id="btnPurge" class="btn btn-sm hide-mobile" onclick="askPurgeDatabase()"
               title="Suppression temporaire — à retirer plus tard"
