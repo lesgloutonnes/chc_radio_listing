@@ -19,11 +19,6 @@
         <field name="comment">Peut créer, modifier, supprimer les équipements et configurer les catégories.</field>
     </record>
 
-  <!-- Tous les utilisateurs internes obtiennent la lecture -->
-    <record id="base.group_user" model="res.groups">
-        <field name="implied_ids" eval="[(4, ref('chc_radio_listing.group_radio_listing_user'))]"/>
-    </record>
-
   <!-- L'administrateur peut gérer l'application après installation -->
     <record id="base.user_admin" model="res.users">
         <field name="groups_id" eval="[(4, ref('chc_radio_listing.group_radio_listing_manager'))]"/>
