@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="action_listing_app" model="ir.actions.act_url">
+    <!--
+        Action client : conserve la barre et le sélecteur d'apps Odoo.
+        Le listing HTML est chargé dans une iframe sous cette barre.
+        (L'ancienne act_url en target=self remplaçait tout le backend.)
+    -->
+    <record id="action_listing_app" model="ir.actions.client">
         <field name="name">Listing Radio</field>
-        <field name="url">/chc_radio_listing/app</field>
-        <field name="target">self</field>
+        <field name="tag">chc_radio_listing.listing_app</field>
+        <field name="target">current</field>
     </record>
 </odoo>
