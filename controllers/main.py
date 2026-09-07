@@ -286,7 +286,9 @@ class RadioListingController(http.Controller):
             return denied
         with file_open("chc_radio_listing/static/src/html/index.html", "r") as f:
             html = f.read()
-        return Response(html, content_type="text/html; charset=utf-8")
+        response = Response(html, content_type="text/html; charset=utf-8")
+        response.headers["X-Frame-Options"] = "SAMEORIGIN"
+        return response
 
     @http.route(
         "/chc_radio_listing/api/data",

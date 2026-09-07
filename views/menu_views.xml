@@ -6,7 +6,7 @@
               sequence="80"
               groups="chc_radio_listing.group_radio_listing_user"/>
 
-    <!-- ─── Application HTML (interface principale) ─────────────── -->
+    <!-- ─── Application HTML (iframe sous la barre Odoo) ────────── -->
     <menuitem id="menu_radio_listing_app"
               name="Listing Radio"
               parent="menu_radio_listing_root"

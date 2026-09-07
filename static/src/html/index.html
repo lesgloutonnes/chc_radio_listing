@@ -202,14 +202,21 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
   <div class="flex items-center justify-between px-4 py-3 gap-3">
     <div class="flex items-center gap-3">
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-        <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="2"/>
+        <path d="M16.24 7.76a6 6 0 0 1 0 8.49"/>
+        <path d="M7.76 16.24a6 6 0 0 1 0-8.49"/>
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+        <path d="M4.93 19.07a10 10 0 0 1 0-14.14"/>
       </svg>
       <div>
         <div style="color:#f1f5f9; font-size:15px; font-weight:600; line-height:1.1;">CHC - Listing Radio</div>
         <div style="color:#94a3b8; font-size:11px;">Listing et gestion équipement d'imagerie médicale.</div>
       </div>
+      <a id="odooHomeLink" href="/web" target="_top" class="btn btn-secondary btn-sm hide-mobile"
+         style="display:none; margin-left:8px;" title="Retour aux applications Odoo">
+        Applications Odoo
+      </a>
     </div>
     <div class="flex items-center gap-2">
       <button id="btnExport" class="btn btn-secondary btn-sm hide-mobile" onclick="exportExcel()">
@@ -999,6 +1006,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.data-table th.sortable').forEach(th => {
     th.addEventListener('click', () => toggleSort(th.dataset.col));
   });
+  if (window.self === window.top) {
+    const homeLink = document.getElementById('odooHomeLink');
+    if (homeLink) homeLink.style.display = '';
+  }
 });
 
 // ─── API calls ──────────────────────────────────────────────────────────────

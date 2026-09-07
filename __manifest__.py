@@ -9,7 +9,7 @@ Listing et gestion équipement d'imagerie médicale.
     "website": "https://www.chc.be",
     "license": "LGPL-3",
     "category": "Medical / Equipment",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "depends": ["base", "web", "mail"],
     "data": [
         "security/init_groups.xml",
@@ -24,6 +24,8 @@ Listing et gestion équipement d'imagerie médicale.
     "assets": {
         "web.assets_backend": [
             "chc_radio_listing/static/src/css/radio_listing.css",
+            "chc_radio_listing/static/src/js/listing_app_action.js",
+            "chc_radio_listing/static/src/xml/listing_app_action.xml",
         ],
     },
     "application": True,
