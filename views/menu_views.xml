@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- ─── Menu racine ──────────────────────────────────────────── -->
+    <!-- ─── Menu racine (ouvre le listing ; pas d'entrée redondante) ─ -->
     <menuitem id="menu_radio_listing_root"
               name="CHC - Listing Radio"
+              action="chc_radio_listing.action_listing_app"
               sequence="80"
               groups="chc_radio_listing.group_radio_listing_user"/>
-
-    <!-- ─── Application HTML (iframe sous la barre Odoo) ────────── -->
-    <menuitem id="menu_radio_listing_app"
-              name="Listing Radio"
-              parent="menu_radio_listing_root"
-              action="chc_radio_listing.action_listing_app"
-              sequence="1"/>
 
     <!-- ─── Tableau de bord Odoo ─────────────────────────────────── -->
     <menuitem id="menu_radio_dashboard"
@@ -22,7 +16,7 @@
 
     <!-- ─── Équipements (vues Odoo natives) ──────────────────────── -->
     <menuitem id="menu_radio_equipments"
-              name="Équipements (Odoo)"
+              name="Équipements"
               parent="menu_radio_listing_root"
               sequence="10"/>
 
