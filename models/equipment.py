@@ -20,6 +20,7 @@ class Equipment(models.Model):
             ("HEU", "HEU"),
             ("MLE", "MLE"),
             ("POLY", "POLY"),
+            ("PRE", "PRE"),
             ("WAR", "WAR"),
             ("S98", "S98"),
         ],
