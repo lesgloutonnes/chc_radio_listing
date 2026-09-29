@@ -11,7 +11,7 @@ from odoo.tools import file_open
 _logger = logging.getLogger(__name__)
 
 MATERIELS = ["RX & Med Nuc", "Autres disciplines", "Imprimantes"]
-SITES = ["AYW", "GRA", "HER", "HEU", "MLE", "POLY", "WAR", "S98"]
+SITES = ["AYW", "GRA", "HER", "HEU", "MLE", "POLY", "PRE", "WAR", "S98"]
 AET_SITE_PREFIXES = [
     ("ETIHIMA", "HER"),
     ("ETINIMA", "MLE"),
@@ -192,7 +192,7 @@ class RadioListingController(http.Controller):
 
         site = (body.get("site") or "").strip().upper()
         valid_sites = {
-            "AYW", "GRA", "HER", "HEU", "MLE", "POLY", "WAR", "S98",
+            "AYW", "GRA", "HER", "HEU", "MLE", "POLY", "PRE", "WAR", "S98",
         }
         if site and site not in valid_sites:
             return "Le site est invalide."

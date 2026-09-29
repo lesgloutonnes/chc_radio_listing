@@ -341,6 +341,7 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
             <option>HEU</option>
             <option>MLE</option>
             <option>POLY</option>
+            <option>PRE</option>
             <option>WAR</option>
             <option>S98</option>
           </select>
@@ -594,7 +595,7 @@ let inlineInit    = false;
 let pollTimer     = null;
 
 // ─── Site helpers ─────────────────────────────────────────────────────────────
-const SITES = ['AYW', 'GRA', 'HER', 'HEU', 'MLE', 'POLY', 'WAR', 'S98'];
+const SITES = ['AYW', 'GRA', 'HER', 'HEU', 'MLE', 'POLY', 'PRE', 'WAR', 'S98'];
 
 function getSite(item) {
   const raw = (item.site || item.designation || '').trim().toUpperCase();
