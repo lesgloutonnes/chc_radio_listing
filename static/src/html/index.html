@@ -23,10 +23,12 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
 .m-rx     { background:#dbeafe; color:#1d4ed8; }
 .m-autres { background:#f3e8ff; color:#7e22ce; }
 .m-imprim { background:#ffedd5; color:#c2410c; }
+.m-pacs   { background:#ccfbf1; color:#0f766e; }
 .m-dhcp   { background:#dcfce7; color:#15803d; }
 .m-fixe   { background:#dbeafe; color:#1d4ed8; }
 .m-wifi   { background:#f3e8ff; color:#7e22ce; }
 .m-win    { background:#dbeafe; color:#1e40af; }
+.m-win-legacy { background:#ffedd5; color:#9a3412; }
 .m-linux  { background:#fef9c3; color:#92400e; }
 
 /* ─── Table ─── */
@@ -106,10 +108,12 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
 .cell-sel.badge-sel.m-rx:focus     { background:#dbeafe; color:#1d4ed8; border-color:#93c5fd; }
 .cell-sel.badge-sel.m-autres:focus { background:#f3e8ff; color:#7e22ce; border-color:#d8b4fe; }
 .cell-sel.badge-sel.m-imprim:focus { background:#ffedd5; color:#c2410c; border-color:#fdba74; }
+.cell-sel.badge-sel.m-pacs:focus   { background:#ccfbf1; color:#0f766e; border-color:#5eead4; }
 .cell-sel.badge-sel.m-dhcp:focus   { background:#dcfce7; color:#15803d; border-color:#86efac; }
 .cell-sel.badge-sel.m-fixe:focus   { background:#dbeafe; color:#1d4ed8; border-color:#93c5fd; }
 .cell-sel.badge-sel.m-wifi:focus   { background:#f3e8ff; color:#7e22ce; border-color:#d8b4fe; }
 .cell-sel.badge-sel.m-win:focus    { background:#dbeafe; color:#1e40af; border-color:#93c5fd; }
+.cell-sel.badge-sel.m-win-legacy:focus { background:#ffedd5; color:#9a3412; border-color:#fdba74; }
 .cell-sel.badge-sel.m-linux:focus  { background:#fef9c3; color:#92400e; border-color:#fde047; }
 
 /* ─── Scrollable wrapper ─── */
@@ -309,13 +313,15 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
           <th class="hide-mobile">Référent</th>
           <th class="sortable hide-mobile" data-col="reseau">Reseau <span class="sort-icon"></span></th>
           <th class="sortable hide-mobile" data-col="os">OS <span class="sort-icon"></span></th>
+          <th class="sortable hide-mobile" data-col="carteGraphique">Carte graphique <span class="sort-icon"></span></th>
+          <th class="sortable hide-mobile" data-col="ecran">Écran <span class="sort-icon"></span></th>
           <th class="sortable hide-mobile" data-col="statut">Statut <span class="sort-icon"></span></th>
           <th class="sortable" data-col="updatedAt">Dernière modif <span class="sort-icon"></span></th>
           <th></th>
         </tr>
       </thead>
       <tbody id="tableBody">
-        <tr><td colspan="19" class="text-center py-12 text-slate-400">Chargement…</td></tr>
+        <tr><td colspan="21" class="text-center py-12 text-slate-400">Chargement…</td></tr>
       </tbody>
     </table>
   </div>
@@ -336,7 +342,7 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
       <div class="grid gap-4" style="grid-template-columns:1fr 1fr;">
         <!-- Site -->
         <div style="grid-column:1/-1;">
-          <label class="text-xs font-medium text-slate-600 block mb-1">Site *</label>
+          <label id="lblSite" data-label="Site" class="text-xs font-medium text-slate-600 block mb-1">Site *</label>
           <select id="editSite" class="inp">
             <option>AYW</option>
             <option>GRA</option>
@@ -351,7 +357,7 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
         </div>
         <!-- AET / DICOM / IP / MAC -->
         <div>
-          <label class="text-xs font-medium text-slate-600 block mb-1">AET *</label>
+          <label id="lblAet" data-label="AET" class="text-xs font-medium text-slate-600 block mb-1">AET *</label>
           <input id="editAet" type="text" class="inp" placeholder="Ex: RX1RADLEG">
         </div>
         <div>
@@ -359,21 +365,21 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
           <input id="editAssocDicom" type="text" class="inp" placeholder="Ex: PACSAGFA">
         </div>
         <div>
-          <label class="text-xs font-medium text-slate-600 block mb-1">IP *</label>
+          <label id="lblIp" data-label="IP" class="text-xs font-medium text-slate-600 block mb-1">IP *</label>
           <input id="editIp" type="text" class="inp" placeholder="Ex: 172.24.47.40">
         </div>
         <div>
-          <label class="text-xs font-medium text-slate-600 block mb-1">MAC *</label>
+          <label id="lblMac" data-label="MAC" class="text-xs font-medium text-slate-600 block mb-1">MAC *</label>
           <input id="editMac" type="text" class="inp" placeholder="Ex: 00:1A:2B:3C:4D:01"
                  onblur="formatMacInput(this)" onpaste="setTimeout(()=>formatMacInput(this),0)">
         </div>
         <!-- Marque / Modèle -->
         <div>
-          <label class="text-xs font-medium text-slate-600 block mb-1">Marque</label>
+          <label id="lblMarque" data-label="Marque" class="text-xs font-medium text-slate-600 block mb-1">Marque</label>
           <input id="editMarque" type="text" class="inp" placeholder="Ex: Philips, Siemens…">
         </div>
         <div>
-          <label class="text-xs font-medium text-slate-600 block mb-1">Modèle</label>
+          <label id="lblModele" data-label="Modèle" class="text-xs font-medium text-slate-600 block mb-1">Modèle</label>
           <input id="editModele" type="text" class="inp" placeholder="Ex: EPIQ 5, Ingenuity…">
         </div>
         <!-- Numéros -->
@@ -382,16 +388,16 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
           <input id="editSerie" type="text" class="inp" placeholder="Numéro de série fabricant">
         </div>
         <div>
-          <label class="text-xs font-medium text-slate-600 block mb-1">N° CHC</label>
+          <label id="lblInventaire" data-label="N° CHC" class="text-xs font-medium text-slate-600 block mb-1">N° CHC</label>
           <input id="editInventaire" type="text" class="inp" placeholder="Ex: 094500">
         </div>
         <!-- Service / Salle / Équipements -->
         <div>
-          <label class="text-xs font-medium text-slate-600 block mb-1">Service</label>
+          <label id="lblService" data-label="Service" class="text-xs font-medium text-slate-600 block mb-1">Service</label>
           <input id="editService" type="text" class="inp" placeholder="Ex: Anesthésie, Cardiologie…">
         </div>
         <div>
-          <label class="text-xs font-medium text-slate-600 block mb-1">Salle / Localisation</label>
+          <label id="lblSalle" data-label="Salle / Localisation" class="text-xs font-medium text-slate-600 block mb-1">Salle / Localisation</label>
           <input id="editSalle" type="text" class="inp" placeholder="Ex: Salle 3, Bloc A…">
         </div>
         <div>
@@ -400,6 +406,7 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
             <option>RX &amp; Med Nuc</option>
             <option>Autres disciplines</option>
             <option>Imprimantes</option>
+            <option>Stations PACS</option>
           </select>
         </div>
         <div>
@@ -425,12 +432,21 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
           </select>
         </div>
         <div>
-          <label class="text-xs font-medium text-slate-600 block mb-1">OS</label>
+          <label id="lblOs" data-label="OS" class="text-xs font-medium text-slate-600 block mb-1">OS</label>
           <select id="editOs" class="inp">
             <option value="">—</option>
-            <option>WIN</option>
+            <option>WIN 10</option>
+            <option>WIN 11</option>
             <option>Linux</option>
           </select>
+        </div>
+        <div>
+          <label id="lblCarteGraphique" data-label="Carte graphique" class="text-xs font-medium text-slate-600 block mb-1">Carte graphique</label>
+          <input id="editCarteGraphique" type="text" class="inp" placeholder="Ex: NVIDIA RTX A2000">
+        </div>
+        <div>
+          <label id="lblEcran" data-label="Écran" class="text-xs font-medium text-slate-600 block mb-1">Écran</label>
+          <input id="editEcran" type="text" class="inp" placeholder="Ex: Eizo RadiForce 2 Mpx">
         </div>
         <div>
           <label class="text-xs font-medium text-slate-600 block mb-1">Statut</label>
@@ -470,7 +486,9 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
       <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:14px 16px; font-size:12px; color:#1d4ed8; line-height:1.7;">
         <strong>Colonnes reconnues (ordre flexible) :</strong><br>
         <code>site, aet, assocDicom, ip, mac, type, marque, modele, numeroSerie, numeroInventaire, service, salle, modalite,
-        responsable, reseau, os, statut</code> (<code>responsable</code> = référent)<br><br>
+        responsable, reseau, os, carteGraphique, ecran, statut</code> (<code>responsable</code> = référent)<br><br>
+        <strong>Stations PACS :</strong> IP et MAC facultatives. Obligatoires : site, AET, service, salle, n° CHC, marque, modèle, OS (WIN 10 ou WIN 11), carte graphique, écran.<br>
+        OS acceptés : <code>WIN 10</code>, <code>WIN 11</code>, <code>Linux</code>. Un ancien <code>WIN</code> est importé comme « WIN (à préciser) » et devra être précisé.<br><br>
         <strong>Format imprimantes :</strong> <code>numeroInventaire, aet, mac, ip, Salle</code> — le site est déduit de l'AET
         (ex. ETIHIMA→HER, ETINIMA→MLE, ETIWIMA→WAR, ETIYIMA→HEU).<br><br>
         La première ligne doit être l'en-tête. Téléchargez le modèle si besoin.
@@ -652,7 +670,7 @@ const TYPES_AUTRES     = ['CAR','EMG','MG','OT','RX','US'];
 
 function typesForModalite(modalite) {
   if (modalite === 'Autres disciplines') return TYPES_AUTRES;
-  if (modalite === 'Imprimantes') return [];
+  if (modalite === 'Imprimantes' || modalite === 'Stations PACS') return [];
   return TYPES_RX_MED_NUC;
 }
 
@@ -689,6 +707,7 @@ function onModaliteChange() {
   if (!curRef || REFERENTS.includes(curRef)) {
     refEl.value = defaultReferentForModalite(modalite);
   }
+  updateRequiredMarkers();
 }
 
 // ─── Référents ────────────────────────────────────────────────────────────────
@@ -717,20 +736,109 @@ function getReferent(item) {
 
 // ─── Reseau / OS helpers ──────────────────────────────────────────────────────
 const RESEAUX = ['DHCP', 'IP Fixe', 'WIFI'];
-const OS_OPTIONS = ['WIN', 'Linux'];
+const OS_OPTIONS = ['WIN 10', 'WIN 11', 'Linux'];
+const OS_LEGACY = 'WIN';
+const OS_LEGACY_LABEL = 'WIN (à préciser)';
+const OS_SORT = ['WIN 10', 'WIN 11', 'Linux', 'WIN'];
 const RESEAU_CLASS = { 'DHCP': 'm-dhcp', 'IP Fixe': 'm-fixe', 'WIFI': 'm-wifi' };
-const OS_CLASS     = { 'WIN': 'm-win', 'Windows': 'm-win', 'Linux': 'm-linux' };
+const OS_CLASS = {
+  'WIN 10': 'm-win',
+  'WIN 11': 'm-win',
+  'WIN': 'm-win-legacy',
+  'Windows': 'm-win-legacy',
+  'Linux': 'm-linux',
+};
 
 function getReseau(item) {
   return RESEAUX.includes(item.reseau) ? item.reseau : '';
 }
 
-function getOs(item) {
-  const os = item.os === 'Windows' ? 'WIN' : (item.os || '');
-  return OS_OPTIONS.includes(os) ? os : '';
+function canonicalOs(os) {
+  const raw = String(os || '').trim();
+  if (!raw) return '';
+  if (OS_OPTIONS.includes(raw) || raw === OS_LEGACY) return raw;
+  const key = raw.toLowerCase();
+  const map = {
+    'windows': OS_LEGACY,
+    'win': OS_LEGACY,
+    'win (à préciser)': OS_LEGACY,
+    'win (a preciser)': OS_LEGACY,
+    'windows 10': 'WIN 10',
+    'win10': 'WIN 10',
+    'win 10': 'WIN 10',
+    'windows 11': 'WIN 11',
+    'win11': 'WIN 11',
+    'win 11': 'WIN 11',
+    'linux': 'Linux',
+  };
+  return map[key] || '';
 }
 
-const BADGE_SELECT_CLASSES = ['m-rx','m-autres','m-imprim','m-dhcp','m-fixe','m-wifi','m-win','m-linux'];
+function isLegacyOs(os) {
+  return canonicalOs(os) === OS_LEGACY;
+}
+
+function osLabel(os) {
+  const value = canonicalOs(os);
+  if (value === OS_LEGACY) return OS_LEGACY_LABEL;
+  return value;
+}
+
+function osOptionLabel(value) {
+  if (!value) return '—';
+  return osLabel(value) || '—';
+}
+
+function getOs(item) {
+  return canonicalOs(item && item.os);
+}
+
+function osOptionsFor(item) {
+  const options = ['', ...OS_OPTIONS];
+  if (getOs(item) === OS_LEGACY) options.push(OS_LEGACY);
+  return options;
+}
+
+function isStationModalite(modalite) {
+  return modalite === 'Stations PACS';
+}
+
+function updateRequiredMarkers() {
+  const station = isStationModalite(document.getElementById('editModalite').value);
+  const mark = (id, required) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const base = el.dataset.label || el.textContent.replace(/\s*\*$/, '');
+    el.textContent = required ? `${base} *` : base;
+  };
+  mark('lblSite', true);
+  mark('lblAet', true);
+  mark('lblIp', !station);
+  mark('lblMac', !station);
+  mark('lblService', station);
+  mark('lblSalle', station);
+  mark('lblInventaire', station);
+  mark('lblMarque', station);
+  mark('lblModele', station);
+  mark('lblOs', station);
+  mark('lblCarteGraphique', station);
+  mark('lblEcran', station);
+}
+
+function populateOsSelect(selected) {
+  const sel = document.getElementById('editOs');
+  const cur = canonicalOs(selected);
+  const options = [
+    { value: '', label: '—' },
+    ...OS_OPTIONS.map(value => ({ value, label: value })),
+  ];
+  if (cur === OS_LEGACY) options.push({ value: OS_LEGACY, label: OS_LEGACY_LABEL });
+  sel.innerHTML = options.map(option =>
+    `<option value="${esc(option.value)}"${option.value === cur ? ' selected' : ''}>${esc(option.label)}</option>`
+  ).join('');
+}
+
+const BADGE_SELECT_CLASSES = ['m-rx','m-autres','m-imprim','m-pacs','m-dhcp','m-fixe','m-wifi','m-win','m-win-legacy','m-linux'];
 
 function badgeClassForSelect(field, value) {
   if (field === 'modalite') return MODALITE_CLASS[value] || 'm-rx';
@@ -753,13 +861,14 @@ function reseauBadge(val) {
 }
 
 function osBadge(val) {
-  if (!val) return '—';
-  const cls = OS_CLASS[val] || 'm-win';
-  return `<span class="badge ${cls}">${esc(val)}</span>`;
+  const os = canonicalOs(val);
+  if (!os) return '—';
+  const cls = OS_CLASS[os] || 'm-win';
+  return `<span class="badge ${cls}">${esc(osLabel(os))}</span>`;
 }
 
 // ─── Équipements (onglets + classification) ───────────────────────────────────
-const MODALITES = ['RX & Med Nuc', 'Autres disciplines', 'Imprimantes'];
+const MODALITES = ['RX & Med Nuc', 'Autres disciplines', 'Imprimantes', 'Stations PACS'];
 
 const STATUTS = [
   ['en_service', 'En service'],
@@ -926,11 +1035,13 @@ const MODALITE_CLASS = {
   'RX & Med Nuc'       : 'm-rx',
   'Autres disciplines' : 'm-autres',
   'Imprimantes'        : 'm-imprim',
+  'Stations PACS'      : 'm-pacs',
 };
 const MODALITE_DOT = {
   'RX & Med Nuc'       : '#3b82f6',
   'Autres disciplines' : '#a855f7',
   'Imprimantes'        : '#f97316',
+  'Stations PACS'      : '#14b8a6',
 };
 
 function getModalite(item) {
@@ -981,8 +1092,9 @@ function finalizeImportRow(item, destMateriel) {
   if (!item.modalite || !MODALITES.includes(item.modalite)) {
     item.modalite = destMateriel || 'RX & Med Nuc';
   }
-  if (!item.site) item.site = guessSiteFromImport(item) || 'MLE';
-  if (!item.salle) {
+  const station = isStationModalite(item.modalite);
+  if (!item.site) item.site = guessSiteFromImport(item) || (station ? '' : 'MLE');
+  if (!item.salle && !station) {
     item.salle = item.aet || item.numeroInventaire || '—';
   }
   return item;
@@ -1058,7 +1170,7 @@ async function loadData(init = false) {
         notify('Mode hors-ligne — données locales chargées', 'warning');
       } else {
         document.getElementById('tableBody').innerHTML =
-          `<tr><td colspan="20" class="text-center py-12 text-red-400">Impossible de contacter le serveur.<br><small>Vérifiez la connexion à Odoo puis rechargez la page.</small></td></tr>`;
+          `<tr><td colspan="21" class="text-center py-12 text-red-400">Impossible de contacter le serveur.<br><small>Vérifiez la connexion à Odoo puis rechargez la page.</small></td></tr>`;
       }
     }
   }
@@ -1099,6 +1211,7 @@ function renderStats() {
     { val: counts['RX & Med Nuc'],    lbl: 'RX & Med Nuc',       col: '#1d4ed8' },
     { val: counts['Autres disciplines'], lbl: 'Autres disciplines', col: '#7e22ce' },
     { val: counts['Imprimantes'],     lbl: 'Imprimantes',        col: '#c2410c' },
+    { val: counts['Stations PACS'],   lbl: 'Stations PACS',      col: '#0f766e' },
     { val: items.filter(i => getStatut(i) === 'en_panne').length, lbl: 'En panne', col: '#dc2626' },
     { val: countItemsWithErrors(), lbl: 'À corriger', col: '#ea580c', action: canWrite },
   ].map(s => s.action ? `
@@ -1176,14 +1289,14 @@ function applyFilters() {
   let items = state.items.filter(itemMatchesTab);
 
   if (q) {
-    const fields = ['site','aet','assocDicom','ip','mac','type','marque','modele','numeroSerie','numeroInventaire','service','salle','modalite','responsable','reseau','os','statut'];
+    const fields = ['site','aet','assocDicom','ip','mac','type','marque','modele','numeroSerie','numeroInventaire','service','salle','modalite','responsable','reseau','os','carteGraphique','ecran','statut'];
     items = items.filter(i => fields.some(f => {
       const val = f === 'site' ? getSite(i)
         : f === 'assocDicom' ? getAssocDicom(i)
         : f === 'mac' ? getMac(i)
         : f === 'type' ? getType(i)
         : f === 'reseau' ? getReseau(i)
-        : f === 'os' ? getOs(i)
+        : f === 'os' ? osLabel(getOs(i))
         : f === 'statut' ? statutLabel(getStatut(i))
         : (i[f] || '');
       return String(val).toLowerCase().includes(q);
@@ -1208,7 +1321,7 @@ function applyFilters() {
     } else if (sortCol === 'reseau') {
       va = RESEAUX.indexOf(getReseau(a)); vb = RESEAUX.indexOf(getReseau(b));
     } else if (sortCol === 'os') {
-      va = OS_OPTIONS.indexOf(getOs(a)); vb = OS_OPTIONS.indexOf(getOs(b));
+      va = OS_SORT.indexOf(getOs(a)); vb = OS_SORT.indexOf(getOs(b));
     }
     const cmp = typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb), 'fr');
     return sortDir === 'asc' ? cmp : -cmp;
@@ -1331,13 +1444,16 @@ function itemToBody(item) {
     modalite: getModalite(item),
     responsable: String(item.responsable || '').trim().toUpperCase(),
     reseau: getReseau(item) || item.reseau || '',
-    os: getOs(item) || item.os || '',
+    os: getOs(item),
+    carteGraphique: String(item.carteGraphique || '').trim(),
+    ecran: String(item.ecran || '').trim(),
     statut: getStatut(item),
   };
 }
 
 function inlineFieldValue(field, raw) {
   if (field === 'mac') return normalizeMac(raw);
+  if (field === 'os') return canonicalOs(raw);
   if (field === 'aet' || field === 'type' || field === 'responsable' || field === 'site') {
     return String(raw || '').trim().toUpperCase();
   }
@@ -1378,12 +1494,29 @@ function findDuplicate(body, excludeId) {
 function validateItemBody(body, excludeId) {
   const statut = body.statut || 'en_service';
   const pending = isPendingStatut(statut);
+  const os = canonicalOs(body.os);
 
+  if (isLegacyOs(os)) {
+    return 'L\'OS « WIN » doit être précisé (WIN 10 ou WIN 11) avant l\'enregistrement.';
+  }
   if (!pending) {
-    if (!body.site) return 'Le site est obligatoire.';
-    if (!body.aet) return 'L\'AET est obligatoire.';
-    if (!body.ip) return 'L\'IP est obligatoire.';
-    if (!body.mac) return 'La MAC est obligatoire.';
+    if (isStationModalite(body.modalite)) {
+      if (!body.site) return 'Le site est obligatoire.';
+      if (!body.aet) return 'L\'AET est obligatoire.';
+      if (!body.service) return 'Le service est obligatoire.';
+      if (!body.salle) return 'La salle / localisation est obligatoire.';
+      if (!body.numeroInventaire) return 'Le n° CHC est obligatoire.';
+      if (!body.marque) return 'La marque est obligatoire.';
+      if (!body.modele) return 'Le modèle est obligatoire.';
+      if (!os) return 'L\'OS est obligatoire.';
+      if (!body.carteGraphique) return 'La carte graphique est obligatoire.';
+      if (!body.ecran) return 'L\'écran est obligatoire.';
+    } else {
+      if (!body.site) return 'Le site est obligatoire.';
+      if (!body.aet) return 'L\'AET est obligatoire.';
+      if (!body.ip) return 'L\'IP est obligatoire.';
+      if (!body.mac) return 'La MAC est obligatoire.';
+    }
   }
   if (body.site && !SITES.includes(body.site)) return 'Le site est invalide.';
   if (body.ip && !isValidIp(body.ip)) return 'Format IP invalide.';
@@ -1397,11 +1530,25 @@ function getItemErrors(item, items = state.items) {
   const statut = body.statut || 'en_service';
   const pending = isPendingStatut(statut);
 
+  if (isLegacyOs(body.os)) errors.push('OS à préciser');
   if (!pending) {
-    if (!body.site) errors.push('Site obligatoire');
-    if (!body.aet) errors.push('AET obligatoire');
-    if (!body.ip) errors.push('IP obligatoire');
-    if (!body.mac) errors.push('MAC obligatoire');
+    if (isStationModalite(body.modalite)) {
+      if (!body.site) errors.push('Site obligatoire');
+      if (!body.aet) errors.push('AET obligatoire');
+      if (!body.service) errors.push('Service obligatoire');
+      if (!body.salle) errors.push('Salle obligatoire');
+      if (!body.numeroInventaire) errors.push('N° CHC obligatoire');
+      if (!body.marque) errors.push('Marque obligatoire');
+      if (!body.modele) errors.push('Modèle obligatoire');
+      if (!canonicalOs(body.os)) errors.push('OS obligatoire');
+      if (!body.carteGraphique) errors.push('Carte graphique obligatoire');
+      if (!body.ecran) errors.push('Écran obligatoire');
+    } else {
+      if (!body.site) errors.push('Site obligatoire');
+      if (!body.aet) errors.push('AET obligatoire');
+      if (!body.ip) errors.push('IP obligatoire');
+      if (!body.mac) errors.push('MAC obligatoire');
+    }
   }
   if (body.site && !SITES.includes(body.site)) errors.push('Site invalide');
   if (body.ip && !isValidIp(body.ip)) errors.push('Format IP invalide');
@@ -1486,8 +1633,9 @@ function cellInput(item, field, opts = {}) {
 function cellSelect(item, field, options, opts = {}) {
   const cur = getItemField(item, field);
   const badgeCls = opts.badge ? badgeClassForSelect(field, cur) : '';
+  const labelOf = opts.labelOf || (o => o || '—');
   const optsHtml = options.map(o =>
-    `<option value="${esc(o)}"${o === cur ? ' selected' : ''}>${esc(o) || '—'}</option>`
+    `<option value="${esc(o)}"${o === cur ? ' selected' : ''}>${esc(labelOf(o))}</option>`
   ).join('');
   const badgeAttr = opts.badge ? ` data-badge="${field}"` : '';
   return `<td class="cell-edit ${opts.tdClass || ''}"><select data-inline="1" data-id="${esc(String(item.id))}" data-field="${field}" class="cell-sel ${opts.badge ? 'badge-sel' : ''} ${badgeCls} ${opts.inpClass || ''}"${badgeAttr}>${optsHtml}</select></td>`;
@@ -1575,6 +1723,8 @@ function renderReadOnlyRow(item, q) {
     <td class="hide-mobile text-slate-500 text-xs">${esc(getReferent(item)||'—')}</td>
     <td class="hide-mobile">${reseauBadge(getReseau(item))}</td>
     <td class="hide-mobile">${osBadge(getOs(item))}</td>
+    <td class="hide-mobile text-slate-600">${hlText(esc(item.carteGraphique||'—'), q)}</td>
+    <td class="hide-mobile text-slate-600">${hlText(esc(item.ecran||'—'), q)}</td>
     <td class="hide-mobile">${statutBadge(item)}</td>
     <td class="text-slate-500 text-xs whitespace-nowrap">${modifDate}</td>
     <td></td>
@@ -1588,7 +1738,7 @@ function renderEditableRow(item) {
   const typeDl = `typeDl_${id}`;
   const refDl = `refDl_${id}`;
   const reseauOpts = ['', ...RESEAUX];
-  const osOpts = ['', ...OS_OPTIONS];
+  const osOpts = osOptionsFor(item);
 
   return `<tr class="${rowClassForItem(item)}" ondblclick="showDetail('${esc(String(id))}')" title="Double-clic pour le détail">
     ${cellSelect(item, 'modalite', MODALITES, { badge: true })}
@@ -1606,7 +1756,9 @@ function renderEditableRow(item) {
     ${cellInput(item, 'salle')}
     <td class="cell-edit hide-mobile"><input type="text" data-inline="1" data-id="${esc(String(id))}" data-field="responsable" class="cell-inp mono" value="${esc(getReferent(item)||'')}" list="${refDl}">${referentDatalistHtml(id, modalite)}</td>
     ${cellSelect(item, 'reseau', reseauOpts, { tdClass: 'hide-mobile', badge: true })}
-    ${cellSelect(item, 'os', osOpts, { tdClass: 'hide-mobile', badge: true })}
+    ${cellSelect(item, 'os', osOpts, { tdClass: 'hide-mobile', badge: true, labelOf: osOptionLabel })}
+    ${cellInput(item, 'carteGraphique', { tdClass: 'hide-mobile' })}
+    ${cellInput(item, 'ecran', { tdClass: 'hide-mobile' })}
     ${cellStatutSelect(item)}
     <td class="text-slate-500 text-xs whitespace-nowrap">${modifDate}</td>
     <td class="col-actions">
@@ -1625,7 +1777,7 @@ function renderTable() {
 
   const tbody = document.getElementById('tableBody');
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="19" class="text-center py-12 text-slate-400">Aucun équipement trouvé.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="21" class="text-center py-12 text-slate-400">Aucun équipement trouvé.</td></tr>`;
   } else {
     tbody.innerHTML = pageItems.map(item =>
       canWrite ? renderEditableRow(item) : renderReadOnlyRow(item, q)
@@ -1674,7 +1826,9 @@ function showDetail(id) {
     ['Salle',             item.salle],
     ['Référent',          getReferent(item)],
     ['Reseau',            getReseau(item)],
-    ['OS',                getOs(item)],
+    ['OS',                osLabel(getOs(item))],
+    ['Carte graphique',   item.carteGraphique],
+    ['Écran',             item.ecran],
     ['Statut',            statutIconHtml(getStatut(item))],
   ].filter(([l,v]) => v || l === 'Statut');
 
@@ -1700,16 +1854,18 @@ function showAddModal() {
   document.getElementById('saveLabel').textContent = 'Ajouter';
   document.getElementById('editDeleteBtn').hidden = true;
   ['Aet','AssocDicom','Ip','Mac','Marque','Modele','Serie','Inventaire','Service','Salle',
-   'Referent','Type'].forEach(f => {
+   'Referent','Type','CarteGraphique','Ecran'].forEach(f => {
     const el = document.getElementById('edit'+f);
     if (el) el.value = '';
   });
   const modalite = activeTab !== '__all__' ? activeTab : 'RX & Med Nuc';
   document.getElementById('editSite').value = 'MLE';
   document.getElementById('editModalite').value = modalite;
-  populateTypeSelect(modalite, modalite === 'Imprimantes' ? '' : 'CT');
+  populateTypeSelect(modalite, (modalite === 'Imprimantes' || modalite === 'Stations PACS') ? '' : 'CT');
   populateReferentDatalist(modalite);
   document.getElementById('editReferent').value = defaultReferentForModalite(modalite);
+  populateOsSelect('');
+  updateRequiredMarkers();
   populateStatutSelect(document.getElementById('editStatut'), 'en_service');
   editFormSnapshot = captureEditFormSnapshot();
   openModal('modalEdit');
@@ -1733,12 +1889,15 @@ function showEditModal(id) {
   document.getElementById('editInventaire').value        = item.numeroInventaire  || '';
   document.getElementById('editService').value           = item.service           || '';
   document.getElementById('editSalle').value             = item.salle             || '';
+  document.getElementById('editCarteGraphique').value    = item.carteGraphique    || '';
+  document.getElementById('editEcran').value             = item.ecran             || '';
   document.getElementById('editModalite').value        = getModalite(item);
   populateTypeSelect(getModalite(item), getType(item));
   populateReferentDatalist(getModalite(item));
   document.getElementById('editReferent').value          = getReferent(item);
   document.getElementById('editReseau').value            = getReseau(item);
-  document.getElementById('editOs').value                = getOs(item);
+  populateOsSelect(getOs(item));
+  updateRequiredMarkers();
   populateStatutSelect(document.getElementById('editStatut'), getStatut(item));
   editFormSnapshot = captureEditFormSnapshot();
   openModal('modalEdit');
@@ -1765,6 +1924,8 @@ async function saveItem() {
     numeroInventaire:     document.getElementById('editInventaire').value.trim(),
     service:              document.getElementById('editService').value.trim(),
     salle:                document.getElementById('editSalle').value.trim(),
+    carteGraphique:       document.getElementById('editCarteGraphique').value.trim(),
+    ecran:                document.getElementById('editEcran').value.trim(),
     modalite:             document.getElementById('editModalite').value,
     responsable:          document.getElementById('editReferent').value.trim().toUpperCase(),
     reseau:               document.getElementById('editReseau').value,
@@ -1894,6 +2055,8 @@ function processImportFile(file) {
         'responsable':['responsable','referent','référent','referents','référents','contact','gestionnaire'],
         'reseau':['reseau','réseau','network','connectivité','connectivite'],
         'os':['os','système','systeme','system','operatingsystem'],
+        'carteGraphique':['cartegraphique','cartegraphe','carte graphique','gpu','cartevideo','carte vidéo','graphics','graphiccard'],
+        'ecran':['ecran','écran','screen','moniteur','affichage'],
         'statut':['statut','status','état','etat','state'],
       };
 
@@ -1924,6 +2087,8 @@ function processImportFile(file) {
           'radiologie': 'RX & Med Nuc', 'médecine nucléaire': 'RX & Med Nuc',
           'autres disciplines': 'Autres disciplines', 'autres': 'Autres disciplines',
           'imprimantes': 'Imprimantes', 'imprimante': 'Imprimantes',
+          'stations pacs': 'Stations PACS', 'station pacs': 'Stations PACS',
+          'stationspacs': 'Stations PACS', 'pacs': 'Stations PACS',
         };
         const rawModalite = (item.modalite || '').toLowerCase().trim();
         if (rawModalite) {
@@ -1940,9 +2105,8 @@ function processImportFile(file) {
         const rawReseau = (item.reseau || '').toLowerCase().trim();
         item.reseau = RESEAU_MAP[rawReseau] || (RESEAUX.includes(item.reseau) ? item.reseau : '');
 
-        const OS_MAP = { 'windows': 'WIN', 'win': 'WIN', 'linux': 'Linux' };
-        const rawOs = (item.os || '').toLowerCase().trim();
-        item.os = OS_MAP[rawOs] || (OS_OPTIONS.includes(item.os) ? item.os : '');
+        const mappedOs = canonicalOs(item.os);
+        item.os = (OS_OPTIONS.includes(mappedOs) || mappedOs === OS_LEGACY) ? mappedOs : '';
 
         const STATUT_MAP = {
           'en service': 'en_service', 'service': 'en_service',
@@ -1954,9 +2118,11 @@ function processImportFile(file) {
         const rawStatut = (item.statut || '').toLowerCase().trim();
         item.statut = STATUT_MAP[rawStatut] || (STATUT_VALUES.includes(item.statut) ? item.statut : 'en_service');
 
-        const types = typesForModalite(destMateriel || item.modalite || 'RX & Med Nuc');
+        const typeModalite = item.modalite || destMateriel || 'RX & Med Nuc';
+        const types = typesForModalite(typeModalite);
         const rawType = (item.type || '').toUpperCase().trim();
-        item.type = types.includes(rawType) ? rawType : '';
+        if (!types.length && isStationModalite(typeModalite)) item.type = rawType;
+        else item.type = types.includes(rawType) ? rawType : '';
 
         item.mac = normalizeMac(item.mac);
 
@@ -1997,9 +2163,9 @@ async function confirmImport() {
 
 function downloadTemplate() {
   const headers = ['site','aet','assocDicom','ip','mac','type','marque','modele','numeroSerie','numeroInventaire','service','salle','modalite',
-    'responsable','reseau','os','statut'];
+    'responsable','reseau','os','carteGraphique','ecran','statut'];
   const example = ['AYW','CHC_AYW_CT01','PACS_CHC','10.10.1.101','00:1A:2B:3C:4D:01','US','Philips','EPIQ 5','SN-123456','CHC-RAD-001','Radiologie','Salle 3','RX & Med Nuc',
-    'BEVAN','DHCP','WIN','en_service'];
+    'BEVAN','DHCP','WIN 10','','','en_service'];
   const ws = XLSX.utils.aoa_to_sheet([headers, example]);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Modèle');
@@ -2014,16 +2180,16 @@ function exportExcel() {
   }
   const items = filtered.length ? filtered : state.items;
   const headers = ['Équipements','Site','AET','Assoc DICOM','IP','MAC','Type','Marque','Modèle','N° Série','N° CHC','Service','Salle',
-    'Référent','Reseau','OS','Statut','Dernière modif'];
+    'Référent','Reseau','OS','Carte graphique','Écran','Statut','Dernière modif'];
   const rows = items.map(i => [
     getModalite(i), getSite(i), i.aet, getAssocDicom(i), i.ip, getMac(i), getType(i), i.marque, i.modele, i.numeroSerie, i.numeroInventaire,
     i.service, i.salle,
-    getReferent(i), getReseau(i), getOs(i), statutLabel(getStatut(i)), i.updatedAt ? formatDateTime(i.updatedAt) : ''
+    getReferent(i), getReseau(i), osLabel(getOs(i)), i.carteGraphique || '', i.ecran || '', statutLabel(getStatut(i)), i.updatedAt ? formatDateTime(i.updatedAt) : ''
   ]);
   const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
 
   // Column widths
-  ws['!cols'] = [14,8,14,10,14,16,14,14,14,16,12,14,12,14,12,10,14,16].map(w=>({wch:w}));
+  ws['!cols'] = [16,8,14,12,14,16,10,14,14,16,12,14,16,14,12,18,18,16,14,18].map(w=>({wch:w}));
 
   const wb = XLSX.utils.book_new();
   const tabLabel = activeTab && activeTab !== '__all__' ? activeTab : 'Tout';
@@ -2057,7 +2223,7 @@ let editFormSnapshot = null;
 
 function captureEditFormSnapshot() {
   const snap = {};
-  ['Site','Aet','AssocDicom','Ip','Mac','Marque','Modele','Serie','Inventaire','Service','Salle','Referent','Type'].forEach(f => {
+  ['Site','Aet','AssocDicom','Ip','Mac','Marque','Modele','Serie','Inventaire','Service','Salle','Referent','Type','CarteGraphique','Ecran'].forEach(f => {
     const el = document.getElementById('edit' + f);
     if (el) snap[f] = el.value;
   });

@@ -8,9 +8,9 @@ from odoo.exceptions import AccessError, ValidationError
 from odoo.http import request, Response
 from odoo.tools import file_open
 
-_logger = logging.getLogger(__name__)
+from odoo.addons.chc_radio_listing.models.listing_rules import MATERIELS, STATION_MODALITE
 
-MATERIELS = ["RX & Med Nuc", "Autres disciplines", "Imprimantes"]
+_logger = logging.getLogger(__name__)
 SITES = ["AYW", "GRA", "HER", "HEU", "MLE", "POLY", "PRE", "WAR", "S98"]
 AET_SITE_PREFIXES = [
     ("ETIHIMA", "HER"),
@@ -105,9 +105,11 @@ class RadioListingController(http.Controller):
     def _normalize_import_row(self, row, materiel=None):
         if materiel and not row.get("modalite"):
             row["modalite"] = materiel
+        is_station = (row.get("modalite") or materiel) == STATION_MODALITE
         if not row.get("site"):
-            row["site"] = self._guess_site_from_row(row) or "MLE"
-        if not row.get("salle"):
+            guessed = self._guess_site_from_row(row)
+            row["site"] = guessed or ("" if is_station else "MLE")
+        if not row.get("salle") and not is_station:
             row["salle"] = row.get("aet") or row.get("numeroInventaire") or "—"
         inv = row.get("numeroInventaire")
         if isinstance(inv, (int, float)) and not isinstance(inv, bool):
@@ -175,20 +177,9 @@ class RadioListingController(http.Controller):
         return None
 
     def _validate_item_body(self, body, exclude_id=None, batch_rows=None):
-        statut = body.get("statut") or "en_service"
-        pending = statut == "en_attente"
-
-        if not pending:
-            if not body.get("site"):
-                return "Le site est obligatoire."
-            if not (body.get("aet") or "").strip():
-                return "L'AET est obligatoire."
-            ip = (body.get("ip") or "").strip()
-            if not ip:
-                return "L'IP est obligatoire."
-            mac_raw = body.get("mac") or ""
-            if not str(mac_raw).strip():
-                return "La MAC est obligatoire."
+        required_error = self._equipment_model().validate_payload(body)
+        if required_error:
+            return required_error
 
         site = (body.get("site") or "").strip().upper()
         valid_sites = {
@@ -211,6 +202,7 @@ class RadioListingController(http.Controller):
             if len(hex_str) != 12:
                 return "Format MAC invalide (12 caractères hexadécimaux)."
 
+        statut = body.get("statut") or "en_service"
         if statut in RELAXED_STATUTS:
             return None
         return self._check_unique_fields(
@@ -232,6 +224,8 @@ class RadioListingController(http.Controller):
             "numeroInventaire": rec.numero_inventaire or "",
             "service": rec.service or "",
             "salle": rec.salle or "",
+            "carteGraphique": rec.carte_graphique or "",
+            "ecran": rec.ecran or "",
             "modalite": rec.modalite or "",
             "responsable": rec.responsable or "",
             "reseau": rec.reseau or "",
@@ -261,6 +255,8 @@ class RadioListingController(http.Controller):
             "numero_inventaire": body.get("numeroInventaire", ""),
             "service": body.get("service", ""),
             "salle": body.get("salle", ""),
+            "carte_graphique": (body.get("carteGraphique") or "").strip(),
+            "ecran": (body.get("ecran") or "").strip(),
             "modalite": materiel,
             "responsable": body.get("responsable", ""),
             "reseau": reseau if reseau else False,
@@ -425,7 +421,10 @@ class RadioListingController(http.Controller):
 
             for row in normalized:
                 vals = self._vals_from_json(row)
-                Equipment.with_context(chc_skip_unique_check=True).create(vals)
+                Equipment.with_context(
+                    chc_skip_unique_check=True,
+                    chc_skip_required_check=True,
+                ).create(vals)
 
             total = Equipment.search_count([("active", "=", True)])
             return _json_response(
