@@ -22,4 +22,11 @@
         <field name="color">0</field>
     </record>
 
+    <record id="category_stations_pacs" model="chc_radio_listing.category">
+        <field name="name">Stations PACS</field>
+        <field name="code">PACS</field>
+        <field name="sequence">4</field>
+        <field name="color">7</field>
+    </record>
+
 </odoo>

@@ -3,6 +3,13 @@ import re
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
+from .listing_rules import (
+    LEGACY_OS,
+    MATERIELS,
+    normalize_os as normalize_os_value,
+    validate_payload as validate_payload_rules,
+)
+
 
 class Equipment(models.Model):
     _name = "chc_radio_listing.equipment"
@@ -45,6 +52,8 @@ class Equipment(models.Model):
     modele = fields.Char(string="Modèle")
     numero_serie = fields.Char(string="N° de série")
     numero_inventaire = fields.Char(string="N° CHC")
+    carte_graphique = fields.Char(string="Carte graphique", tracking=True)
+    ecran = fields.Char(string="Écran", tracking=True)
 
     # ── Classification ────────────────────────────────────────────────────────
     category_id = fields.Many2one(
@@ -58,11 +67,7 @@ class Equipment(models.Model):
     salle = fields.Char(string="Salle / Localisation", tracking=True)
     responsable = fields.Char(string="Référent")
     modalite = fields.Selection(
-        [
-            ("RX & Med Nuc", "RX & Med Nuc"),
-            ("Autres disciplines", "Autres disciplines"),
-            ("Imprimantes", "Imprimantes"),
-        ],
+        [(name, name) for name in MATERIELS],
         string="Équipements",
         default="RX & Med Nuc",
         tracking=True,
@@ -77,8 +82,10 @@ class Equipment(models.Model):
     )
     os = fields.Selection(
         [
-            ("WIN", "WIN"),
+            ("WIN 10", "WIN 10"),
+            ("WIN 11", "WIN 11"),
             ("Linux", "Linux"),
+            (LEGACY_OS, "WIN (à préciser)"),
         ],
         string="OS",
     )
@@ -132,12 +139,7 @@ class Equipment(models.Model):
 
     @api.model
     def _category_for_modalite(self, modalite):
-        materiels = [
-            "RX & Med Nuc",
-            "Autres disciplines",
-            "Imprimantes",
-        ]
-        if modalite not in materiels:
+        if modalite not in MATERIELS:
             modalite = "RX & Med Nuc"
         Category = self.env["chc_radio_listing.category"]
         cat = Category.search([("name", "=", modalite)], limit=1)
@@ -198,11 +200,54 @@ class Equipment(models.Model):
 
     @staticmethod
     def normalize_os(os_val):
-        if os_val == "Windows":
-            return "WIN"
-        if os_val in ("WIN", "Linux"):
-            return os_val
-        return os_val or False
+        return normalize_os_value(os_val)
+
+    @api.model
+    def validate_payload(self, body):
+        return validate_payload_rules(body)
+
+    def _api_payload(self):
+        self.ensure_one()
+        return {
+            "site": self.site or "",
+            "aet": self.aet or "",
+            "ip": self.ip or "",
+            "mac": self.mac or "",
+            "service": self.service or "",
+            "salle": self.salle or "",
+            "numeroInventaire": self.numero_inventaire or "",
+            "marque": self.marque or "",
+            "modele": self.modele or "",
+            "os": self.os or "",
+            "carteGraphique": self.carte_graphique or "",
+            "ecran": self.ecran or "",
+            "modalite": self.modalite or "",
+            "statut": self.statut or "en_service",
+        }
+
+    @api.constrains(
+        "modalite",
+        "site",
+        "aet",
+        "ip",
+        "mac",
+        "service",
+        "salle",
+        "numero_inventaire",
+        "marque",
+        "modele",
+        "os",
+        "carte_graphique",
+        "ecran",
+        "statut",
+    )
+    def _check_required_fields(self):
+        if self.env.context.get("chc_skip_required_check"):
+            return
+        for rec in self:
+            error = rec.validate_payload(rec._api_payload())
+            if error:
+                raise ValidationError(error)
 
     @api.model_create_multi
     def create(self, vals_list):
