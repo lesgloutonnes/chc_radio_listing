@@ -83,6 +83,25 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
 .statut-filter-arrow { color:#64748b; font-size:12px; line-height:1; }
 .statut-filter-menu { min-width:190px; }
 .data-table td.cell-edit { padding:4px 6px; }
+#mainTable.cols-modality [data-col="carteGraphique"],
+#mainTable.cols-modality [data-col="ecran"],
+#mainTable.cols-imprimantes [data-col="assocDicom"],
+#mainTable.cols-imprimantes [data-col="type"],
+#mainTable.cols-imprimantes [data-col="marque"],
+#mainTable.cols-imprimantes [data-col="modele"],
+#mainTable.cols-imprimantes [data-col="numeroSerie"],
+#mainTable.cols-imprimantes [data-col="service"],
+#mainTable.cols-imprimantes [data-col="responsable"],
+#mainTable.cols-imprimantes [data-col="reseau"],
+#mainTable.cols-imprimantes [data-col="os"],
+#mainTable.cols-imprimantes [data-col="carteGraphique"],
+#mainTable.cols-imprimantes [data-col="ecran"],
+#mainTable.cols-pacs [data-col="assocDicom"],
+#mainTable.cols-pacs [data-col="ip"],
+#mainTable.cols-pacs [data-col="mac"],
+#mainTable.cols-pacs [data-col="type"],
+#mainTable.cols-pacs [data-col="numeroSerie"],
+#mainTable.cols-pacs [data-col="responsable"] { display:none; }
 .data-table th.col-ip, .data-table td.col-ip { min-width:128px; white-space:nowrap; }
 .data-table th.col-mac, .data-table td.col-mac { min-width:148px; white-space:nowrap; }
 .data-table td.col-ip .cell-inp,
@@ -310,7 +329,7 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
           <th class="sortable hide-mobile" data-col="numeroInventaire">N° CHC <span class="sort-icon"></span></th>
           <th class="sortable hide-mobile" data-col="service">Service <span class="sort-icon"></span></th>
           <th class="sortable" data-col="salle">Salle <span class="sort-icon"></span></th>
-          <th class="hide-mobile">Référent</th>
+          <th class="hide-mobile" data-col="responsable">Référent</th>
           <th class="sortable hide-mobile" data-col="reseau">Reseau <span class="sort-icon"></span></th>
           <th class="sortable hide-mobile" data-col="os">OS <span class="sort-icon"></span></th>
           <th class="sortable hide-mobile" data-col="carteGraphique">Carte graphique <span class="sort-icon"></span></th>
@@ -442,11 +461,11 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
         </div>
         <div>
           <label id="lblCarteGraphique" data-label="Carte graphique" class="text-xs font-medium text-slate-600 block mb-1">Carte graphique</label>
-          <input id="editCarteGraphique" type="text" class="inp" placeholder="Ex: NVIDIA RTX A2000">
+          <input id="editCarteGraphique" type="text" class="inp" placeholder="Ex: BARCO MXRT-5600">
         </div>
         <div>
           <label id="lblEcran" data-label="Écran" class="text-xs font-medium text-slate-600 block mb-1">Écran</label>
-          <input id="editEcran" type="text" class="inp" placeholder="Ex: Eizo RadiForce 2 Mpx">
+          <input id="editEcran" type="text" class="inp" placeholder="Ex: Barco Coronis 6 MP">
         </div>
         <div>
           <label class="text-xs font-medium text-slate-600 block mb-1">Statut</label>
@@ -1199,6 +1218,20 @@ function switchTab(name) {
   applyFilters();
 }
 
+const COLUMN_MODE = {
+  'RX & Med Nuc': 'cols-modality',
+  'Autres disciplines': 'cols-modality',
+  'Imprimantes': 'cols-imprimantes',
+  'Stations PACS': 'cols-pacs',
+};
+
+function applyColumnMode() {
+  const table = document.getElementById('mainTable');
+  if (!table) return;
+  table.classList.remove('cols-modality', 'cols-imprimantes', 'cols-pacs', 'cols-all');
+  table.classList.add(COLUMN_MODE[activeTab] || 'cols-all');
+}
+
 // ─── Stats bar ────────────────────────────────────────────────────────────────
 function renderStats() {
   const items = state.items;
@@ -1627,7 +1660,7 @@ function patchItem(id, updates) {
 function cellInput(item, field, opts = {}) {
   const val = esc(getItemField(item, field) || '');
   const list = opts.list ? ` list="${opts.list}"` : '';
-  return `<td class="cell-edit ${opts.colClass || ''} ${opts.tdClass || ''}"><input type="text" data-inline="1" data-id="${esc(String(item.id))}" data-field="${field}" class="cell-inp ${opts.inpClass || ''}" value="${val}"${list}></td>`;
+  return `<td data-col="${field}" class="cell-edit ${opts.colClass || ''} ${opts.tdClass || ''}"><input type="text" data-inline="1" data-id="${esc(String(item.id))}" data-field="${field}" class="cell-inp ${opts.inpClass || ''}" value="${val}"${list}></td>`;
 }
 
 function cellSelect(item, field, options, opts = {}) {
@@ -1638,7 +1671,7 @@ function cellSelect(item, field, options, opts = {}) {
     `<option value="${esc(o)}"${o === cur ? ' selected' : ''}>${esc(labelOf(o))}</option>`
   ).join('');
   const badgeAttr = opts.badge ? ` data-badge="${field}"` : '';
-  return `<td class="cell-edit ${opts.tdClass || ''}"><select data-inline="1" data-id="${esc(String(item.id))}" data-field="${field}" class="cell-sel ${opts.badge ? 'badge-sel' : ''} ${badgeCls} ${opts.inpClass || ''}"${badgeAttr}>${optsHtml}</select></td>`;
+  return `<td data-col="${field}" class="cell-edit ${opts.tdClass || ''}"><select data-inline="1" data-id="${esc(String(item.id))}" data-field="${field}" class="cell-sel ${opts.badge ? 'badge-sel' : ''} ${badgeCls} ${opts.inpClass || ''}"${badgeAttr}>${optsHtml}</select></td>`;
 }
 
 function typeDatalistHtml(id, modalite) {
@@ -1657,7 +1690,7 @@ function cellStatutSelect(item) {
   const cur = getStatut(item);
   const meta = STATUT_META[cur] || STATUT_META.en_service;
   const menuItems = STATUTS.map(([val]) => statutMenuOptionHtml(val, cur)).join('');
-  return `<td class="cell-edit hide-mobile statut-cell">
+  return `<td data-col="statut" class="cell-edit hide-mobile statut-cell">
     <div class="statut-picker" data-id="${esc(String(id))}">
       <button type="button" class="statut-picker-btn" title="${esc(meta.label)}" aria-label="Changer le statut : ${esc(meta.label)}">
         ${statutIconHtml(cur)}
@@ -1707,26 +1740,26 @@ function renderReadOnlyRow(item, q) {
   const modalite = getModalite(item);
   const modifDate = item.updatedAt ? formatDateTime(item.updatedAt) : '—';
   return `<tr class="${rowClassForItem(item)}" onclick="showDetail('${esc(String(item.id))}')" style="cursor:pointer;">
-    <td>${badgeHtml(modalite)}</td>
-    <td><span class="font-medium font-mono">${hlText(esc(getSite(item)||'—'), q)}</span></td>
-    <td class="font-mono text-xs">${hlText(esc(item.aet||'—'), q)}</td>
-    <td class="hide-mobile font-mono text-xs">${hlText(esc(getAssocDicom(item)||'—'), q)}</td>
-    <td class="hide-mobile col-ip font-mono text-xs">${hlText(esc(item.ip||'—'), q)}</td>
-    <td class="hide-mobile col-mac font-mono text-xs">${hlText(esc(getMac(item)||'—'), q)}</td>
-    <td class="hide-mobile font-mono text-xs font-medium">${hlText(esc(getType(item)||'—'), q)}</td>
-    <td class="hide-mobile text-slate-600">${hlText(esc(item.marque||'—'), q)}</td>
-    <td class="hide-mobile text-slate-500">${esc(item.modele||'—')}</td>
-    <td class="hide-mobile text-slate-500 font-mono text-xs">${hlText(esc(item.numeroSerie||'—'), q)}</td>
-    <td class="hide-mobile text-slate-500 font-mono text-xs">${esc(item.numeroInventaire||'—')}</td>
-    <td class="hide-mobile text-slate-600">${hlText(esc(item.service||'—'), q)}</td>
-    <td class="text-slate-600">${hlText(esc(item.salle||'—'), q)}</td>
-    <td class="hide-mobile text-slate-500 text-xs">${esc(getReferent(item)||'—')}</td>
-    <td class="hide-mobile">${reseauBadge(getReseau(item))}</td>
-    <td class="hide-mobile">${osBadge(getOs(item))}</td>
-    <td class="hide-mobile text-slate-600">${hlText(esc(item.carteGraphique||'—'), q)}</td>
-    <td class="hide-mobile text-slate-600">${hlText(esc(item.ecran||'—'), q)}</td>
-    <td class="hide-mobile">${statutBadge(item)}</td>
-    <td class="text-slate-500 text-xs whitespace-nowrap">${modifDate}</td>
+    <td data-col="modalite">${badgeHtml(modalite)}</td>
+    <td data-col="site"><span class="font-medium font-mono">${hlText(esc(getSite(item)||'—'), q)}</span></td>
+    <td data-col="aet" class="font-mono text-xs">${hlText(esc(item.aet||'—'), q)}</td>
+    <td data-col="assocDicom" class="hide-mobile font-mono text-xs">${hlText(esc(getAssocDicom(item)||'—'), q)}</td>
+    <td data-col="ip" class="hide-mobile col-ip font-mono text-xs">${hlText(esc(item.ip||'—'), q)}</td>
+    <td data-col="mac" class="hide-mobile col-mac font-mono text-xs">${hlText(esc(getMac(item)||'—'), q)}</td>
+    <td data-col="type" class="hide-mobile font-mono text-xs font-medium">${hlText(esc(getType(item)||'—'), q)}</td>
+    <td data-col="marque" class="hide-mobile text-slate-600">${hlText(esc(item.marque||'—'), q)}</td>
+    <td data-col="modele" class="hide-mobile text-slate-500">${esc(item.modele||'—')}</td>
+    <td data-col="numeroSerie" class="hide-mobile text-slate-500 font-mono text-xs">${hlText(esc(item.numeroSerie||'—'), q)}</td>
+    <td data-col="numeroInventaire" class="hide-mobile text-slate-500 font-mono text-xs">${esc(item.numeroInventaire||'—')}</td>
+    <td data-col="service" class="hide-mobile text-slate-600">${hlText(esc(item.service||'—'), q)}</td>
+    <td data-col="salle" class="text-slate-600">${hlText(esc(item.salle||'—'), q)}</td>
+    <td data-col="responsable" class="hide-mobile text-slate-500 text-xs">${esc(getReferent(item)||'—')}</td>
+    <td data-col="reseau" class="hide-mobile">${reseauBadge(getReseau(item))}</td>
+    <td data-col="os" class="hide-mobile">${osBadge(getOs(item))}</td>
+    <td data-col="carteGraphique" class="hide-mobile text-slate-600">${hlText(esc(item.carteGraphique||'—'), q)}</td>
+    <td data-col="ecran" class="hide-mobile text-slate-600">${hlText(esc(item.ecran||'—'), q)}</td>
+    <td data-col="statut" class="hide-mobile">${statutBadge(item)}</td>
+    <td data-col="updatedAt" class="text-slate-500 text-xs whitespace-nowrap">${modifDate}</td>
     <td></td>
   </tr>`;
 }
@@ -1747,20 +1780,20 @@ function renderEditableRow(item) {
     ${cellInput(item, 'assocDicom', { tdClass: 'hide-mobile', inpClass: 'mono' })}
     ${cellInput(item, 'ip', { tdClass: 'hide-mobile', inpClass: 'mono', colClass: 'col-ip' })}
     ${cellInput(item, 'mac', { tdClass: 'hide-mobile', inpClass: 'mono', colClass: 'col-mac' })}
-    <td class="cell-edit hide-mobile"><input type="text" data-inline="1" data-id="${esc(String(id))}" data-field="type" class="cell-inp mono" value="${esc(getType(item)||'')}" list="${typeDl}">${typeDatalistHtml(id, modalite)}</td>
+    <td data-col="type" class="cell-edit hide-mobile"><input type="text" data-inline="1" data-id="${esc(String(id))}" data-field="type" class="cell-inp mono" value="${esc(getType(item)||'')}" list="${typeDl}">${typeDatalistHtml(id, modalite)}</td>
     ${cellInput(item, 'marque', { tdClass: 'hide-mobile' })}
     ${cellInput(item, 'modele', { tdClass: 'hide-mobile' })}
     ${cellInput(item, 'numeroSerie', { tdClass: 'hide-mobile', inpClass: 'mono' })}
     ${cellInput(item, 'numeroInventaire', { tdClass: 'hide-mobile', inpClass: 'mono' })}
     ${cellInput(item, 'service', { tdClass: 'hide-mobile' })}
     ${cellInput(item, 'salle')}
-    <td class="cell-edit hide-mobile"><input type="text" data-inline="1" data-id="${esc(String(id))}" data-field="responsable" class="cell-inp mono" value="${esc(getReferent(item)||'')}" list="${refDl}">${referentDatalistHtml(id, modalite)}</td>
+    <td data-col="responsable" class="cell-edit hide-mobile"><input type="text" data-inline="1" data-id="${esc(String(id))}" data-field="responsable" class="cell-inp mono" value="${esc(getReferent(item)||'')}" list="${refDl}">${referentDatalistHtml(id, modalite)}</td>
     ${cellSelect(item, 'reseau', reseauOpts, { tdClass: 'hide-mobile', badge: true })}
     ${cellSelect(item, 'os', osOpts, { tdClass: 'hide-mobile', badge: true, labelOf: osOptionLabel })}
     ${cellInput(item, 'carteGraphique', { tdClass: 'hide-mobile' })}
     ${cellInput(item, 'ecran', { tdClass: 'hide-mobile' })}
     ${cellStatutSelect(item)}
-    <td class="text-slate-500 text-xs whitespace-nowrap">${modifDate}</td>
+    <td data-col="updatedAt" class="text-slate-500 text-xs whitespace-nowrap">${modifDate}</td>
     <td class="col-actions">
       <button class="btn-icon" title="Supprimer" style="color:#ef4444;" onclick="event.stopPropagation(); askDelete('${item.id}','${esc(getSite(item)||'cet équipement')}')">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
@@ -1771,6 +1804,7 @@ function renderEditableRow(item) {
 
 // ─── Table render ─────────────────────────────────────────────────────────────
 function renderTable() {
+  applyColumnMode();
   const q     = document.getElementById('searchInput').value.toLowerCase().trim();
   const start = (page - 1) * PAGE_SIZE;
   const pageItems = filtered.slice(start, start + PAGE_SIZE);
