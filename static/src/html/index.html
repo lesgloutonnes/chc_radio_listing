@@ -85,6 +85,8 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
 .data-table td.cell-edit { padding:4px 6px; }
 #mainTable.cols-modality [data-col="carteGraphique"],
 #mainTable.cols-modality [data-col="ecran"],
+#mainTable.cols-modality [data-col="numeroSerie"],
+#mainTable.cols-modality [data-col="responsable"],
 #mainTable.cols-imprimantes [data-col="assocDicom"],
 #mainTable.cols-imprimantes [data-col="type"],
 #mainTable.cols-imprimantes [data-col="marque"],
@@ -102,6 +104,19 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
 #mainTable.cols-pacs [data-col="type"],
 #mainTable.cols-pacs [data-col="numeroSerie"],
 #mainTable.cols-pacs [data-col="responsable"] { display:none; }
+#mainTable.cols-pacs th[data-col="os"],
+#mainTable.cols-pacs td[data-col="os"] {
+  min-width: 168px;
+  width: 168px;
+  white-space: nowrap;
+}
+#mainTable.cols-pacs td[data-col="os"] .cell-sel,
+#mainTable.cols-pacs td[data-col="os"] .badge {
+  min-width: 148px;
+  max-width: none;
+  width: 100%;
+  box-sizing: border-box;
+}
 .data-table th.col-ip, .data-table td.col-ip { min-width:128px; white-space:nowrap; }
 .data-table th.col-mac, .data-table td.col-mac { min-width:148px; white-space:nowrap; }
 .data-table td.col-ip .cell-inp,
@@ -279,7 +294,7 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
       <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
     </svg>
     <input id="searchInput" type="text" class="inp" style="padding-left:34px; font-size:13px;"
-           placeholder="Rechercher (site, type, service, référent, AET, IP, marque…)" oninput="applyFilters()">
+           placeholder="Rechercher (site, type, service, référent, n° série, AET, IP, marque…)" oninput="applyFilters()">
   </div>
   <select id="filterSite" class="inp" style="width:auto; min-width:110px;" onchange="applyFilters()">
     <option value="">Tous les sites</option>
